@@ -7,7 +7,10 @@
     <title>Document</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    
+
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
 </head>
 <body>
     <div class = "container">
@@ -16,8 +19,34 @@
             <h2 class="text-center">We only have 10 tables! Book before they're gone!</h2>
         </div>
         <div class="text-center">
-            <a href=""><button type="button" class="btn btn-primary btn-lg btn-block">home</button></a>
+
             <a href="/reserve"><button type="button" class="btn btn-secondary btn-lg btn-block">Make Resverations</button></a>
+            <a href="/"><button type="button" class="btn btn-primary btn-lg btn-block">Home</button></a>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+      
+              <!-- Current Tables in Use -->
+              <div class="card">
+                <div class="card-header">
+                  <h4>Current Reservations</h4>
+                </div>
+                <div class="card-body">
+                  <ul id="tableList" class="list-group"></ul>
+                </div>
+              </div>
+      
+              <!-- Waiting List Card -->
+              <div class="card mt-4">
+                <div class="card-header">
+                  <h4>Waiting List</h4>
+                </div>
+                <div class="card-body">
+                  <ul id="waitList" class="list-group"></ul>
+                </div>
+              </div>
+            </div>
 
         </div>
 
@@ -34,4 +63,57 @@
     <!-- body -->
     
 </body>
+
+<script type="text/javascript">
+    function runTableQuery(){
+        $.ajax({url: "/api/tbales", method: "GET"})
+            .then(function(tableData){
+
+                console.log(tableData);
+                console.log("------------------------------------");
+
+                for(let i = 0; i < tableData.length; i++){
+                    let tableList = $("#tableList");
+
+                    let listItem = $("<li class='list-group-item mt-4'>");
+
+                    listItem.append(
+                        $("<h2>").text("Table #" + (i + 1)),
+                        $("<hr>"),
+                        $("<h2>").text("ID: " + tableData[i].customerID),
+                        $("<h2>").text("Name: " + tableData[i].customerName),
+                        $("<h2>").text("Email: " + tableData[i].customerEmail),
+                        $("<h2>").text("Phone: " + tableData[i].phoneNumber)
+                    );
+                    tableList.append(listItem)
+                }
+
+            });
+    }
+    function runWaitListQuery(){
+        $.ajax({ url: "/api/waitlist", method: "GET" })
+      .then(function(waitData) {
+        console.log(waitData);
+        console.log("------------------------------------");
+        for (var i = 0; i < waitData.length; i++) {
+            var waitList = $("#waitList");
+            var listItem = $("<li class='list-group-item mt-4'>");
+
+            listItem.append(
+            $("<h2>").text("Table #" + (i + 1)),
+            $("<hr>"),
+            $("<h2>").text("ID: " + waitData[i].customerID),
+            $("<h2>").text("Name: " + waitData[i].customerName),
+            $("<h2>").text("Email: " + waitData[i].customerEmail),
+            $("<h2>").text("Phone: " + waitData[i].phoneNumber)
+          );
+
+            waitList.append(listItem);
+        }
+
+     });
+
+    }
+</script>
+
 </html>
